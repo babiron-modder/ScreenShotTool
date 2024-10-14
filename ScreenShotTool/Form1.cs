@@ -182,11 +182,11 @@ namespace ScreenShotTool
         private static int screenshot_position_Width = 0;   // 矩形の横幅
         private static int screenshot_position_Height = 0;  // 矩形の高さ
         private static int screen_key_code = -1;  // スクショをするキーコード
-        private static int screen_key_code_lshift = -1;  // スクショをするキーコード(左シフト)
-        private static int screen_key_code_rshift = -1;  // スクショをするキーコード(右シフト)
-        private static int screen_key_code_lctrl = -1;   // スクショをするキーコード(左Ctrl)
-        private static int screen_key_code_rctrl = -1;   // スクショをするキーコード(右Ctrl)
-        private static int screen_key_code_alt = -1;     // スクショをするキーコード(alt)
+        private static bool screen_key_code_lshift = false;  // スクショをするキーコード(左シフト)
+        private static bool screen_key_code_rshift = false;  // スクショをするキーコード(右シフト)
+        private static bool screen_key_code_lctrl = false;   // スクショをするキーコード(左Ctrl)
+        private static bool screen_key_code_rctrl = false;   // スクショをするキーコード(右Ctrl)
+        private static bool screen_key_code_alt = false;     // スクショをするキーコード(alt)
         private static bool screenshot_effect = true;     // スクショ時のエフェクト
         private static List<IntPtr> monitor_handles;
         private static List<Point> monitor_points;
@@ -415,6 +415,11 @@ namespace ScreenShotTool
             // スクショのキーコードの指定
             //screen_key_code = 44;
             screen_key_code = keyValues[comboBox3.Items[comboBox3.SelectedIndex].ToString()];
+            screen_key_code_lctrl = checkBox1.Checked;
+            screen_key_code_rctrl = checkBox4.Checked;
+            screen_key_code_lshift = checkBox2.Checked;
+            screen_key_code_rshift = checkBox5.Checked;
+            screen_key_code_alt = checkBox3.Checked;
 
 
             // スクショのエフェクトの設定
@@ -436,14 +441,35 @@ namespace ScreenShotTool
 
         private static void InterceptKeyboard_KeyDownEvent(object sender, InterceptKeyboard.OriginalKeyEventArg e)
         {
-            //Console.WriteLine("Keydown KeyCode {0}", e.KeyCode);
-
+            Console.WriteLine("Keydown KeyCode {0}", e.KeyCode);
 
             keyboard_keys[e.KeyCode] = true;
+
         }
         private static void InterceptKeyboard_KeyUpEvent(object sender, InterceptKeyboard.OriginalKeyEventArg e)
         {
-            //Console.WriteLine("Keyup KeyCode {0}", e.KeyCode);
+            Console.WriteLine("Keyup KeyCode {0}", e.KeyCode);
+
+            if(screen_key_code_lctrl && false == keyboard_keys[(int)Keys.LControlKey])
+            {
+                return;
+            }
+            if (screen_key_code_rctrl && false == keyboard_keys[(int)Keys.RControlKey])
+            {
+                return;
+            }
+            if (screen_key_code_lshift && false == keyboard_keys[(int)Keys.LShiftKey])
+            {
+                return;
+            }
+            if (screen_key_code_rshift && false == keyboard_keys[(int)Keys.RShiftKey])
+            {
+                return;
+            }
+            if (screen_key_code_alt && false == keyboard_keys[(int)Keys.Alt])
+            {
+                return;
+            }
 
             if (keyboard_keys[e.KeyCode] && e.KeyCode == screen_key_code)
             {
@@ -714,5 +740,18 @@ namespace ScreenShotTool
             return true;
         }
 
+
+        private void button3_EnabledChanged(object sender, EventArgs e)
+        {
+
+            if (button3.Enabled)
+            {
+                button3.BackColor = Color.Red;
+            }
+            else
+            {
+                button3.BackColor = SystemColors.Control;
+            }
+        }
     }
 }

@@ -525,6 +525,7 @@
             this.button3.TabIndex = 1;
             this.button3.Text = "適用";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.EnabledChanged += new System.EventHandler(this.button3_EnabledChanged);
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // Form1
